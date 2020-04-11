@@ -1,7 +1,7 @@
 
 #include "engine/application.h"
 
-#include <cstdio>
+#include <spdlog/spdlog.h>
 
 namespace engine {
 
@@ -10,7 +10,7 @@ namespace engine {
     Application::~Application() = default;
 
     void Application::run() {
-        printf("Starting application...");
+        spdlog::info("Starting application...");
 
     }
 

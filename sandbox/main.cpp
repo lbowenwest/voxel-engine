@@ -1,7 +1,6 @@
+#include <spdlog/spdlog.h>
 #include <engine/application.h>
 #include <engine/entrypoint.h>
-
-#include <cstdio>
 
 class Sandbox : public engine::Application {
 public:
@@ -14,7 +13,7 @@ public:
 
 
 void Sandbox::run() {
-    printf("hello from sandbox!\n");
+    spdlog::info("Hello from sandbox");
     engine::Application::run();
 }
 

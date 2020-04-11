@@ -1,5 +1,7 @@
 #pragma once
 
+#include <spdlog/spdlog.h>
+
 #include "engine/application.h"
 
 namespace engine {
@@ -8,6 +10,8 @@ namespace engine {
 }
 
 int main(int argc, char* argv[]) {
+    spdlog::info("Starting from entry point");
+
     auto app = engine::create_application();
     app->run();
     delete app;
