@@ -11,6 +11,4 @@ namespace engine {
     };
 
 
-    extern Application* create_application();
-
 }
