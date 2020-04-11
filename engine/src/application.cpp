@@ -1,16 +1,18 @@
-
 #include "engine/application.h"
 
-#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace engine {
 
-    Application::Application() = default;
+    Application::Application() {
+        _core_logger = spdlog::stdout_color_mt("engine");
+        logger = spdlog::stdout_color_mt("client");
+    }
 
     Application::~Application() = default;
 
     void Application::run() {
-        spdlog::info("Starting application...");
+        _core_logger->info("Starting application...");
 
     }
 

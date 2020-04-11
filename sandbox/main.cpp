@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <engine/application.h>
 #include <engine/entrypoint.h>
 
@@ -13,7 +12,7 @@ public:
 
 
 void Sandbox::run() {
-    spdlog::info("Hello from sandbox");
+    logger->info("Hello from sandbox");
     engine::Application::run();
 }
 
