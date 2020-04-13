@@ -15,6 +15,53 @@
 
 namespace engine {
 
+    enum class WindowMode {
+        FULLSCREEN,
+        WINDOWED
+    };
+
+    struct Properties {
+        std::string title;
+        glm::vec2 size;
+//            WindowMode mode;
+        Properties() = delete;
+    };
+
+    class Window;
+
+    class WindowImpl {
+    public:
+        WindowImpl() = delete;
+        explicit WindowImpl(Window *owner) : owner{owner} {}
+        virtual ~WindowImpl() = default;
+
+        virtual void update() = 0;
+        virtual void maximise() = 0;
+        virtual void minimise() = 0;
+        virtual void restore() = 0;
+        virtual void close() = 0;
+
+    protected:
+        Window *owner;
+    };
+
+    static uint8_t gl_window_count = 0;
+
+    class GLWindowImpl : public WindowImpl {
+    public:
+        GLWindowImpl() = delete;
+        explicit GLWindowImpl(Window *owner);
+        ~GLWindowImpl() override;
+
+        void update() override;
+        void maximise() override;
+        void minimise() override;
+        void restore() override;
+        void close() override;
+
+    private:
+        GLFWwindow *window;
+    };
 
     class Window : private entt::emitter<Window> {
 
@@ -26,128 +73,29 @@ namespace engine {
         using entt::emitter<Window>::clear;
         using entt::emitter<Window>::publish;
 
-        struct Properties {
-            std::string title;
-            glm::vec2 size;
+        Window() = delete;
 
-            Properties() : title{"Window"}, size{1280, 720} {}
+        explicit Window(Properties properties) :
+                properties{std::move(properties)},
+                impl{std::make_unique<GLWindowImpl>(reinterpret_cast<Window *>(this))} {}
 
-            Properties(std::string title, glm::vec2 size) :
-                    title{std::move(title)}, size{size} {}
-        };
+        ~Window() override = default;
 
-        Window() : properties{} {}
+        Window(const Window&) = delete;
+        Window& operator=(const Window&) = delete;
+        Window(Window&&) = delete;
+        Window& operator=(Window&&) = delete;
 
-        Window(std::string title, glm::vec2 size) : properties{std::move(title), size} {}
-
-
-        virtual void update() {}
+        void update() { impl->update(); }
+        void maximise() { impl->maximise(); }
+        void minimise() { impl->minimise(); }
+        void restore() { impl->restore(); }
+        void close() { impl->close(); }
 
         Properties properties;
 
-    };
-
-
-    static uint8_t gl_window_count = 0;
-
-    class GLWindow : private entt::emitter<GLWindow>, public Window {
-
-        friend class entt::emitter<GLWindow>;
-
-    public:
-        using entt::emitter<GLWindow>::on;
-        using entt::emitter<GLWindow>::once;
-        using entt::emitter<GLWindow>::clear;
-        using entt::emitter<GLWindow>::publish;
-
-        GLWindow() : Window{}, entt::emitter<GLWindow>{} {
-            if (gl_window_count == 0) {
-                glfwInit();
-                glfwSetErrorCallback([](int error, const char *description) {
-                    spdlog::error("GLFW Error ({0}): {1}", error, description);
-                });
-            }
-            window = glfwCreateWindow(
-                    static_cast<int>(properties.size.x),
-                    static_cast<int>(properties.size.y),
-                    properties.title.c_str(),
-                    nullptr,
-                    nullptr
-            );
-            ++gl_window_count;
-
-            glfwMakeContextCurrent(window);
-            glfwSetWindowUserPointer(window, reinterpret_cast<GLWindow *>(this));
-
-            glfwSetWindowSizeCallback(window, [](GLFWwindow *gl_window, int width, int height) {
-                auto handler = reinterpret_cast<GLWindow *>(glfwGetWindowUserPointer(gl_window));
-                handler->properties.size = {width, height};
-                handler->publish<event::WindowResizeEvent>(width, height);
-            });
-
-            glfwSetWindowCloseCallback(window, [](GLFWwindow *gl_window) {
-                auto handler = reinterpret_cast<GLWindow *>(glfwGetWindowUserPointer(gl_window));
-                handler->publish<event::WindowCloseEvent>();
-            });
-
-            glfwSetKeyCallback(window, [](GLFWwindow *gl_window, int key, int scancode, int action, int mods) {
-                auto handler = reinterpret_cast<GLWindow *>(glfwGetWindowUserPointer(gl_window));
-                switch (action) {
-                    case GLFW_PRESS:
-                        handler->publish<event::KeyPressedEvent>(key, 0, mods);
-                        break;
-                    case GLFW_REPEAT:
-                        handler->publish<event::KeyPressedEvent>(key, 1, mods);
-                        break;
-                    case GLFW_RELEASE:
-                        handler->publish<event::KeyReleasedEvent>(key);
-                        break;
-                    default:
-                        break;
-                }
-            });
-
-            glfwSetMouseButtonCallback(window, [](GLFWwindow *gl_window, int button, int action, int mods) {
-                auto handler = reinterpret_cast<GLWindow *>(glfwGetWindowUserPointer(gl_window));
-                switch (action) {
-                    case GLFW_PRESS:
-                        handler->publish<event::MouseButtonPressedEvent>(button);
-                        break;
-                    case GLFW_RELEASE:
-                        handler->publish<event::MouseButtonReleasedEvent>(button);
-                        break;
-                    default:
-                        break;
-                }
-            });
-
-            glfwSetScrollCallback(window, [](GLFWwindow *gl_window, double x_offset, double y_offset) {
-                auto handler = reinterpret_cast<GLWindow *>(glfwGetWindowUserPointer(gl_window));
-                handler->publish<event::MouseScrolledEvent>(static_cast<float>(x_offset), static_cast<float>(y_offset));
-            });
-
-            glfwSetCursorPosCallback(window, [](GLFWwindow *gl_window, double x_pos, double y_pos) {
-                auto handler = reinterpret_cast<GLWindow *>(glfwGetWindowUserPointer(gl_window));
-                handler->publish<event::MouseMovedEvent>(static_cast<float>(x_pos), static_cast<float>(y_pos));
-            });
-        }
-
-        ~GLWindow() override {
-            glfwDestroyWindow(window);
-            --gl_window_count;
-            if (!gl_window_count) {
-                glfwTerminate();
-            }
-        }
-
-        void update() override {
-            glfwPollEvents();
-            glfwSwapBuffers(window);
-        }
-
-
     private:
-        GLFWwindow *window;
+        std::unique_ptr<WindowImpl> impl;
 
     };
 
