@@ -16,7 +16,8 @@ namespace engine {
         virtual std::unique_ptr<Window> create_window() {
             return std::make_unique<Window>(Properties{"window", {1280, 720}});
         }
-        virtual Window& get_window() {
+
+        Window& get_window() {
             return *window;
         }
 
