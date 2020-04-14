@@ -2,6 +2,8 @@
 
 #include "engine/window.h"
 
+struct GLFWwindow;
+
 namespace engine {
     static uint8_t gl_window_count = 0;
 

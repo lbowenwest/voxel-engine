@@ -12,8 +12,6 @@
 #include "engine/events/mouse.h"
 #include "engine/events/window.h"
 
-struct GLFWwindow;
-
 namespace engine {
 
     enum class WindowMode {
