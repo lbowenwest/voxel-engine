@@ -3,7 +3,6 @@ project(engine)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES
-        ${PROJECT_SOURCE_DIR}/src/library.cpp
         ${PROJECT_SOURCE_DIR}/src/application.cpp
         ${PROJECT_SOURCE_DIR}/src/window.cpp
 )
