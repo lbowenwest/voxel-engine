@@ -24,24 +24,6 @@ namespace engine {
 
         window = create_window({"Window", {1280, 720}});
 
-        window->once<event::WindowCloseEvent>(
-                [=](const event::WindowCloseEvent &event, Window &window) {
-                    logger->info("Close event");
-                    stop();
-                }
-        );
-
-        window->on<event::MouseButtonPressedEvent>(
-                [=](const event::MouseButtonPressedEvent &event, Window &window) {
-                    logger->info("Mouse button {0} pressed", event.button);
-                }
-        );
-        window->on<engine::event::KeyPressedEvent>(
-                [=](const event::KeyPressedEvent &event, Window &window) {
-                    logger->info("Key pressed: {0}", event.keycode);
-                }
-        );
-
         setup();
     }
 
