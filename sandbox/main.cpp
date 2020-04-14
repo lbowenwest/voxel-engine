@@ -1,8 +1,6 @@
 #include <engine/application.h>
 #include <engine/window.h>
-#include <engine/events/window.h>
-#include <engine/events/keyboard.h>
-#include <engine/events/mouse.h>
+#include <engine/events/all.h>
 
 class Sandbox : public engine::Application {
 public:
