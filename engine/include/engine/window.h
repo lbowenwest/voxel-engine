@@ -46,23 +46,6 @@ namespace engine {
         Window *owner;
     };
 
-    static uint8_t gl_window_count = 0;
-
-    class GLWindowImpl : public WindowImpl {
-    public:
-        GLWindowImpl() = delete;
-        explicit GLWindowImpl(Window *owner);
-        ~GLWindowImpl() override;
-
-        void update() override;
-        void maximise() override;
-        void minimise() override;
-        void restore() override;
-        void close() override;
-
-    private:
-        GLFWwindow *window;
-    };
 
     class Window : private entt::emitter<Window> {
 
@@ -75,11 +58,7 @@ namespace engine {
         using entt::emitter<Window>::publish;
 
         Window() = delete;
-
-        explicit Window(Properties properties) :
-                properties{std::move(properties)},
-                impl{std::make_unique<GLWindowImpl>(reinterpret_cast<Window *>(this))} {}
-
+        explicit Window(Properties properties);
         ~Window() override = default;
 
         Window(const Window&) = delete;
@@ -87,11 +66,11 @@ namespace engine {
         Window(Window&&) = delete;
         Window& operator=(Window&&) = delete;
 
-        void update() { impl->update(); }
-        void maximise() { impl->maximise(); }
-        void minimise() { impl->minimise(); }
-        void restore() { impl->restore(); }
-        void close() { impl->close(); }
+        void update();
+        void maximise();
+        void minimise();
+        void restore();
+        void close();
 
         Properties properties;
 
