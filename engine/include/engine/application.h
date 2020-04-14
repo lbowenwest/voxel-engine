@@ -13,25 +13,20 @@ namespace engine {
         Application();
         virtual ~Application();
 
-        virtual std::unique_ptr<Window> create_window() {
-            return std::make_unique<Window>(Properties{"window", {1280, 720}});
-        }
+        virtual std::unique_ptr<Window> create_window(Properties properties);
+        Window& get_window();
 
-        Window& get_window() {
-            return *window;
-        }
 
-        static inline std::shared_ptr<spdlog::logger> logger;
+        int run(int argc, char* argv[]);
+        void stop();
+        void initialise();
+        void destroy();
 
-        int run();
         virtual void setup();
         virtual void shutdown();
         virtual void update();
 
-        void stop() {
-            running = false;
-        }
-
+        static inline std::shared_ptr<spdlog::logger> logger;
 
     private:
         bool running {true};

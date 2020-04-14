@@ -17,12 +17,10 @@ Sandbox::Sandbox() : engine::Application{} {
 }
 
 void Sandbox::setup() {
-    engine::Application::setup();
     logger->info("Hello from sandbox");
 }
 
 void Sandbox::shutdown() {
-    engine::Application::shutdown();
     logger->info("Goodbye from sandbox");
 }
 
@@ -33,5 +31,5 @@ void Sandbox::update() {
 
 int main(int argc, char *argv[]) {
     Sandbox sandbox {};
-    return sandbox.run();
+    return sandbox.run(argc, argv);
 }
