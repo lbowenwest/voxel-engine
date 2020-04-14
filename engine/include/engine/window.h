@@ -7,11 +7,12 @@
 #include <spdlog/spdlog.h>
 #include <entt/entt.hpp>
 #include <glm/vec2.hpp>
-#include <GLFW/glfw3.h>
 
 #include "engine/events/keyboard.h"
 #include "engine/events/mouse.h"
 #include "engine/events/window.h"
+
+struct GLFWwindow;
 
 namespace engine {
 

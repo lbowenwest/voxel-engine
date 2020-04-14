@@ -1,5 +1,8 @@
 #include "engine/window.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace engine {
 
     GLWindowImpl::GLWindowImpl(Window *owner) : WindowImpl{owner} {
@@ -9,6 +12,12 @@ namespace engine {
                 spdlog::error("GLFW Error ({0}): {1}", error, description);
             });
         }
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
         window = glfwCreateWindow(
                 static_cast<int>(owner->properties.size.x),
                 static_cast<int>(owner->properties.size.y),
@@ -16,10 +25,22 @@ namespace engine {
                 nullptr,
                 nullptr
         );
+        if (!window) {
+            spdlog::error("Failed to create GLFW window");
+            glfwTerminate();
+            return;
+        }
         ++gl_window_count;
 
         glfwMakeContextCurrent(window);
         glfwSetWindowUserPointer(window, reinterpret_cast<Window *>(owner));
+
+        if (!gladLoadGL()) {
+            spdlog::error("Unable to load glad");
+            glfwDestroyWindow(window);
+            glfwTerminate();
+            return;
+        }
 
         glfwSetWindowSizeCallback(window, [](GLFWwindow *gl_window, int width, int height) {
             auto handler = reinterpret_cast<Window *>(glfwGetWindowUserPointer(gl_window));
@@ -83,8 +104,11 @@ namespace engine {
     }
 
     void GLWindowImpl::update() {
-        glfwPollEvents();
+        glClearColor(0.15f, 0.6f, 0.4f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     void GLWindowImpl::maximise() {
