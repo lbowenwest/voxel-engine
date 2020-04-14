@@ -128,4 +128,8 @@ namespace engine {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
 
+    void* GLWindowImpl::get_native() {
+        return window;
+    }
+
 }

@@ -39,6 +39,7 @@ namespace engine {
         virtual void minimise() = 0;
         virtual void restore() = 0;
         virtual void close() = 0;
+        virtual void* get_native() = 0;
 
     protected:
         Window *owner;
@@ -69,6 +70,7 @@ namespace engine {
         void minimise();
         void restore();
         void close();
+        void* get_native_window();
 
         Properties properties;
 

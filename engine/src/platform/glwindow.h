@@ -18,6 +18,7 @@ namespace engine {
         void minimise() override;
         void restore() override;
         void close() override;
+        void* get_native() override;
 
     private:
         GLFWwindow *window;

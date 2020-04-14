@@ -29,5 +29,9 @@ namespace engine {
         impl->close();
     }
 
+    void* Window::get_native_window() {
+        return impl->get_native();
+    }
+
 
 }
