@@ -34,10 +34,11 @@ namespace engine {
 
     class Window;
 
+    template<typename EventDispatcher>
     class WindowImpl {
     public:
         WindowImpl() = delete;
-        explicit WindowImpl(Window *owner) : owner{owner} {}
+        explicit WindowImpl(EventDispatcher *dispatcher) : dispatcher{dispatcher} {}
         virtual ~WindowImpl() = default;
 
         virtual void update() = 0;
@@ -48,7 +49,7 @@ namespace engine {
         virtual void* get_native() = 0;
 
     protected:
-        Window *owner;
+        EventDispatcher *dispatcher;
     };
 
 
@@ -71,17 +72,17 @@ namespace engine {
         Window(Window&&) = delete;
         Window& operator=(Window&&) = delete;
 
-        inline void update();
-        inline void maximise();
-        inline void minimise();
-        inline void restore();
-        inline void close();
-        inline void* get_native_window();
+        void update();
+        void maximise();
+        void minimise();
+        void restore();
+        void close();
+        void* get_native_window();
 
         Properties properties;
 
     private:
-        std::unique_ptr<WindowImpl> impl;
+        std::unique_ptr<WindowImpl<Window>> impl;
 
     };
 

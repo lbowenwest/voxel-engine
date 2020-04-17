@@ -9,7 +9,7 @@ namespace engine {
             properties{std::move(properties)} {
         switch (properties.platform) {
             case WindowPlatform::OPENGL:
-                impl = std::make_unique<GLWindowImpl>(reinterpret_cast<Window*>(this));
+                impl = std::make_unique<GLWindowImpl<Window>>(reinterpret_cast<Window*>(this));
                 break;
             default:
                 break;

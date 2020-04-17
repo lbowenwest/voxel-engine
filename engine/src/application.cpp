@@ -21,9 +21,6 @@ namespace engine {
 
     void Application::initialise() {
         _core_logger->info("Initialising application...");
-
-        window = create_window({"Window", {1280, 720}});
-
         setup();
     }
 
