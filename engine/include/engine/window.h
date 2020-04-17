@@ -19,10 +19,16 @@ namespace engine {
         WINDOWED
     };
 
+    enum class WindowPlatform {
+        OPENGL,
+    };
+
     struct Properties {
         std::string title;
         glm::vec2 size;
-//            WindowMode mode;
+        WindowPlatform platform{WindowPlatform::OPENGL};
+        WindowMode mode{WindowMode::WINDOWED};
+
         Properties() = delete;
     };
 
@@ -65,12 +71,12 @@ namespace engine {
         Window(Window&&) = delete;
         Window& operator=(Window&&) = delete;
 
-        void update();
-        void maximise();
-        void minimise();
-        void restore();
-        void close();
-        void* get_native_window();
+        inline void update();
+        inline void maximise();
+        inline void minimise();
+        inline void restore();
+        inline void close();
+        inline void* get_native_window();
 
         Properties properties;
 

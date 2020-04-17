@@ -24,6 +24,9 @@ void Sandbox::setup() {
     using engine::event::MouseButtonPressedEvent;
     using engine::event::KeyPressedEvent;
 
+    logger->info("Creating window");
+    window = create_window({"Window", {1280, 720}, engine::WindowPlatform::OPENGL});
+
     logger->info("Hello from sandbox");
 
     logger->info("Registering callbacks");

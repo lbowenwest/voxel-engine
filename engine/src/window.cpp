@@ -6,8 +6,15 @@
 namespace engine {
 
     Window::Window(Properties properties) :
-            properties{std::move(properties)},
-            impl{std::make_unique<GLWindowImpl>(reinterpret_cast<Window*>(this))} {}
+            properties{std::move(properties)} {
+        switch (properties.platform) {
+            case WindowPlatform::OPENGL:
+                impl = std::make_unique<GLWindowImpl>(reinterpret_cast<Window*>(this));
+                break;
+            default:
+                break;
+        }
+    }
 
     void Window::update() {
         impl->update();

@@ -28,9 +28,11 @@ namespace engine {
 
         static inline std::shared_ptr<spdlog::logger> logger;
 
+    protected:
+        std::unique_ptr<Window> window;
+
     private:
         bool running {true};
-        std::unique_ptr<Window> window;
         static inline std::shared_ptr<spdlog::logger> _core_logger;
 
     };
