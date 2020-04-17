@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
         ${PROJECT_SOURCE_DIR}/src/application.cpp
         ${PROJECT_SOURCE_DIR}/src/window.cpp
-        ${PROJECT_SOURCE_DIR}/src/platform/glwindow.cpp
-        src/imgui.cpp)
+        ${PROJECT_SOURCE_DIR}/src/imgui.cpp
+)
 
 find_package(spdlog REQUIRED)
 find_package(EnTT REQUIRED)

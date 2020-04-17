@@ -9,7 +9,7 @@ namespace engine {
     static uint8_t gl_window_count = 0;
 
     template<typename EventDispatcher>
-    class GLWindowImpl : public WindowImpl<EventDispatcher> {
+    class GLWindowImpl : public WindowImpl {
     public:
         GLWindowImpl() = delete;
         explicit GLWindowImpl(EventDispatcher *dispatcher);
@@ -23,11 +23,12 @@ namespace engine {
         void* get_native() override;
 
     private:
+        EventDispatcher *dispatcher;
         GLFWwindow *window;
     };
 
     template<typename EventDispatcher>
-    GLWindowImpl<EventDispatcher>::GLWindowImpl(EventDispatcher *dispatcher) : WindowImpl<EventDispatcher>{dispatcher} {
+    GLWindowImpl<EventDispatcher>::GLWindowImpl(EventDispatcher *dispatcher) : dispatcher{dispatcher} {
         if (gl_window_count == 0) {
             glfwInit();
             glfwSetErrorCallback([](int error, const char *description) {

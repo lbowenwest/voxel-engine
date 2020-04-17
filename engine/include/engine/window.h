@@ -12,6 +12,7 @@
 #include "engine/events/mouse.h"
 #include "engine/events/window.h"
 
+
 namespace engine {
 
     enum class WindowMode {
@@ -20,6 +21,7 @@ namespace engine {
     };
 
     enum class WindowPlatform {
+        NONE = 0,
         OPENGL,
     };
 
@@ -32,14 +34,12 @@ namespace engine {
         Properties() = delete;
     };
 
-    class Window;
-
-    template<typename EventDispatcher>
     class WindowImpl {
     public:
-        WindowImpl() = delete;
-        explicit WindowImpl(EventDispatcher *dispatcher) : dispatcher{dispatcher} {}
         virtual ~WindowImpl() = default;
+
+        template<typename EventDispatcher>
+        static std::unique_ptr<WindowImpl> create(WindowPlatform platform, EventDispatcher* dispatcher);
 
         virtual void update() = 0;
         virtual void maximise() = 0;
@@ -47,9 +47,6 @@ namespace engine {
         virtual void restore() = 0;
         virtual void close() = 0;
         virtual void* get_native() = 0;
-
-    protected:
-        EventDispatcher *dispatcher;
     };
 
 
@@ -72,18 +69,19 @@ namespace engine {
         Window(Window&&) = delete;
         Window& operator=(Window&&) = delete;
 
-        void update();
-        void maximise();
-        void minimise();
-        void restore();
-        void close();
-        void* get_native_window();
+        inline void update() { impl->update(); };
+        inline void maximise() { impl->maximise(); }
+        inline void minimise() { impl->minimise(); }
+        inline void restore() { impl->restore(); }
+        inline void close() { impl->close(); }
+        inline void* get_native_window() { return impl->get_native(); }
 
         Properties properties;
 
     private:
-        std::unique_ptr<WindowImpl<Window>> impl;
+        std::unique_ptr<WindowImpl> impl;
 
     };
+
 
 }

@@ -1,44 +1,29 @@
 #include "engine/window.h"
 
-#include "platform/glwindow.h"
-
+#include "platform/opengl/glwindow.h"
 
 namespace engine {
 
     Window::Window(Properties properties) :
-            properties{std::move(properties)} {
-        switch (properties.platform) {
+            properties{std::move(properties)},
+            impl{WindowImpl::create(properties.platform, this)} {
+
+    }
+
+    template<typename EventDispatcher>
+    std::unique_ptr<WindowImpl> WindowImpl::create(WindowPlatform platform, EventDispatcher* dispatcher) {
+        switch (platform) {
+            case WindowPlatform::NONE:
+                spdlog::error("WindowPlatform::NONE not supported");
+                return nullptr;
+
             case WindowPlatform::OPENGL:
-                impl = std::make_unique<GLWindowImpl<Window>>(reinterpret_cast<Window*>(this));
-                break;
+                return std::make_unique<GLWindowImpl<EventDispatcher>>(dispatcher);
+
             default:
-                break;
+                spdlog::error("Unknown platform api");
+                return nullptr;
         }
     }
-
-    void Window::update() {
-        impl->update();
-    }
-
-    void Window::maximise() {
-        impl->maximise();
-    }
-
-    void Window::minimise() {
-        impl->minimise();
-    }
-
-    void Window::restore() {
-        impl->restore();
-    }
-
-    void Window::close() {
-        impl->close();
-    }
-
-    void* Window::get_native_window() {
-        return impl->get_native();
-    }
-
 
 }
