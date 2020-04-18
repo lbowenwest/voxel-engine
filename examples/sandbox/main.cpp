@@ -20,12 +20,13 @@ Sandbox::Sandbox() : engine::Application{} {
 
 void Sandbox::setup() {
     using engine::Window;
+    using engine::event::WindowResizeEvent;
     using engine::event::WindowCloseEvent;
     using engine::event::MouseButtonPressedEvent;
     using engine::event::KeyPressedEvent;
 
     logger->info("Creating window");
-    window = create_window({"Window", {1280, 720}, engine::WindowPlatform::OPENGL});
+    window = create_window({"Window", {1280, 720}});
 
     logger->info("Hello from sandbox");
 
@@ -42,9 +43,15 @@ void Sandbox::setup() {
                 logger->info("Mouse button {0} pressed", event.button);
             }
     );
-    get_window().on<engine::event::KeyPressedEvent>(
+    get_window().on<KeyPressedEvent>(
             [=](const KeyPressedEvent &event, Window &window) {
                 logger->info("Key pressed: {0}", event.keycode);
+            }
+    );
+    get_window().on<WindowResizeEvent>(
+            [=](const WindowResizeEvent &event, Window &window) {
+                logger->info("Window resized to w: {0} h: {1}", event.width, event.height);
+
             }
     );
 }

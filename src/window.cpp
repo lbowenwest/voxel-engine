@@ -6,18 +6,20 @@ namespace engine {
 
     Window::Window(Properties properties) :
             properties{std::move(properties)},
-            impl{WindowImpl::create(properties.platform, this)} {
+            impl{WindowAPI::create(this)} {
 
     }
 
+    WindowAPI::Platform  WindowAPI::platform = WindowAPI::Platform::OPENGL;
+
     template<typename EventDispatcher>
-    std::unique_ptr<WindowImpl> WindowImpl::create(WindowPlatform platform, EventDispatcher* dispatcher) {
+    std::unique_ptr<WindowAPI> WindowAPI::create(EventDispatcher* dispatcher) {
         switch (platform) {
-            case WindowPlatform::NONE:
+            case Platform::NONE:
                 spdlog::error("WindowPlatform::NONE not supported");
                 return nullptr;
 
-            case WindowPlatform::OPENGL:
+            case Platform::OPENGL:
                 return std::make_unique<GLWindowImpl<EventDispatcher>>(dispatcher);
 
             default:

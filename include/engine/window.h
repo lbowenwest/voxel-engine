@@ -20,26 +20,26 @@ namespace engine {
         WINDOWED
     };
 
-    enum class WindowPlatform {
-        NONE = 0,
-        OPENGL,
-    };
 
     struct Properties {
         std::string title;
         glm::vec2 size;
-        WindowPlatform platform{WindowPlatform::OPENGL};
         WindowMode mode{WindowMode::WINDOWED};
 
         Properties() = delete;
     };
 
-    class WindowImpl {
+    class WindowAPI {
     public:
-        virtual ~WindowImpl() = default;
+        enum class Platform {
+            NONE = 0,
+            OPENGL,
+        };
+
+        virtual ~WindowAPI() = default;
 
         template<typename EventDispatcher>
-        static std::unique_ptr<WindowImpl> create(WindowPlatform platform, EventDispatcher* dispatcher);
+        static std::unique_ptr<WindowAPI> create(EventDispatcher* dispatcher);
 
         virtual void update() = 0;
         virtual void maximise() = 0;
@@ -47,7 +47,13 @@ namespace engine {
         virtual void restore() = 0;
         virtual void close() = 0;
         virtual void* get_native() = 0;
+
+        static Platform get_platform() { return platform; }
+
+    private:
+        static Platform platform;
     };
+
 
 
     class Window : private entt::emitter<Window> {
@@ -79,7 +85,7 @@ namespace engine {
         Properties properties;
 
     private:
-        std::unique_ptr<WindowImpl> impl;
+        std::unique_ptr<WindowAPI> impl;
 
     };
 

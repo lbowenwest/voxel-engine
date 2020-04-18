@@ -9,7 +9,7 @@ namespace engine {
     static uint8_t gl_window_count = 0;
 
     template<typename EventDispatcher>
-    class GLWindowImpl : public WindowImpl {
+    class GLWindowImpl : public WindowAPI {
     public:
         GLWindowImpl() = delete;
         explicit GLWindowImpl(EventDispatcher *dispatcher);
